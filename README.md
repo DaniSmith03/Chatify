@@ -1,2 +1,2 @@
-# FBClone
+# Chatify
 DigitalCrafts Backend Project
