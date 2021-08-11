@@ -31,6 +31,36 @@ db.once('open', function() {
   console.log("Database connection works.")
 });
 
+
+
+              //testing mongo
+              const kittySchema = new mongoose.Schema({
+                name: String,
+                color: String
+              });
+              const Kitten = mongoose.model('Kitten', kittySchema);
+              const silence = new Kitten({ name: 'Silence', color: 'Orange' });
+              console.log(silence.name); // 'Silence'
+              silence.save(function (err, silence) {
+                if (err) return console.error(err);
+                console.log("kitten saved")
+              });
+
+              const ownerSchema = new mongoose.Schema({
+                name: String,
+                Age: Number
+              });
+              const owner = mongoose.model('Owner', ownerSchema);
+              const Bob = new owner({ name: 'Bob', Age: 23 });
+              console.log(Bob.name, Bob.age);
+              Bob.save(function (err, Bob) {
+                if (err) return console.error(err);
+                console.log("owner saved")
+              });
+
+
+
+
 //authentication
 const bcrypt = require('bcrypt'); // hash user passwords
 const initializePassport = require('./passport.config');
