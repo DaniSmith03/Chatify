@@ -1,7 +1,7 @@
 //database setup
 const mongoose = require('mongoose');
 // Mongo DB Connection 
-  mongoose.connect("mongodb+srv://admin:dcbackend2021@cluster0.8yp23.mongodb.net/chatifydb?retryWrites=true&w=majority",  {
+ module.exports = mongoose.connect("mongodb+srv://admin:dcbackend2021@cluster0.8yp23.mongodb.net/chatifydb?retryWrites=true&w=majority",  {
     dbName: "chatifydb",
     user: "admin",
     pass: "dcbackend2021",
