@@ -16,66 +16,8 @@ const io = new Server(server);
 //database setup
 const mongoose = require('mongoose');
 const db = require("./config/db.config.js");
-const userSchema = new mongoose.Schema({
-  name: String,
-  email: String,
-  password: String
-});
-const User = mongoose.model('User', userSchema);
-const user = new User({
-  name: 'TestSubject',
-  email: 'testsubj@yahoo.com',
-  password: 'hopethisworks'
-});
-user.save(function(err, user) {
-  if (err) {
-    return console.log(err);
-  }
-});
-// Mongo DB Connection 
-//   mongoose.connect("mongodb+srv://admin:dcbackend2021@cluster0.8yp23.mongodb.net/chatifydb?retryWrites=true&w=majority",  {
-//     dbName: "chatifydb",
-//     user: "admin",
-//     pass: "dcbackend2021",
-//     useNewUrlParser: true,
-//     useUnifiedTopology: true
-//   })
-//     .then( (res) => console.log('Mongo DB connected'))
-//     .catch((err) => console.log(err));
-// const db = mongoose.connection;
-// db.on('error', console.error.bind(console, 'connection error:'));
-// db.once('open', function() {
-//   console.log("Database connection works.")
-// });
-
-
-
-              // //testing mongo
-              // const kittySchema = new mongoose.Schema({
-              //   name: String,
-              //   color: String
-              // });
-              // const Kitten = mongoose.model('Kitten', kittySchema);
-              // const silence = new Kitten({ name: 'Silence', color: 'Orange' });
-              // console.log(silence.name); // 'Silence'
-              // silence.save(function (err, silence) {
-              //   if (err) return console.error(err);
-              //   console.log("kitten saved")
-              // });
-
-              // const ownerSchema = new mongoose.Schema({
-              //   name: String,
-              //   Age: Number
-              // });
-              // const owner = mongoose.model('Owner', ownerSchema);
-              // const Bob = new owner({ name: 'Bob', Age: 23 });
-              // console.log(Bob.name, Bob.age);
-              // Bob.save(function (err, Bob) {
-              //   if (err) return console.error(err);
-              //   console.log("owner saved")
-              // });
-
-
+const authRoute = require('./routes/auth.route');
+app.use('/api', authRoute)
 
 
 //authentication
@@ -90,7 +32,6 @@ initializePassport(
   email => users.find(user => user.email === email),
   id => users.find(user => user.id === id)
   )
-const users = [];
 
 
 app.set('view-engine', 'ejs');
@@ -105,64 +46,64 @@ app.use(passport.initialize())
 app.use(passport.session()) 
 app.use(methodOverride('_method'))
 
-app.get('/', checkAuthenticated, (req, res) => {
-  res.render('index.ejs');
-});
+// app.get('/', checkAuthenticated, (req, res) => {
+//   res.render('index.ejs');
+// });
 
-app.get('/login', checkNotAuthenticated, (req, res) => {
-  res.render('login.ejs')
-});
+// app.get('/login', checkNotAuthenticated, (req, res) => {
+//   res.render('login.ejs')
+// });
 
-app.post('/login', checkNotAuthenticated, passport.authenticate('local', {
-  successRedirect: '/',
-  failureRedirect: '/login',
-  failureFlash: true
-}))
+// app.post('/login', checkNotAuthenticated, passport.authenticate('local', {
+//   successRedirect: '/',
+//   failureRedirect: '/login',
+//   failureFlash: true
+// }))
 
 
-app.get('/register', checkNotAuthenticated, (req, res) => {
-  res.render('register.ejs');
-});
+// app.get('/register', checkNotAuthenticated, (req, res) => {
+//   res.render('register.ejs');
+// });
 
-app.post('/register', checkNotAuthenticated, async (req, res) => {
-  try {
-    const hashedPW = await bcrypt.hashSync(req.body.password, 10)
-    users.push({
-      id: Date.now().toString(),
-      name: req.body.name,
-      email: req.body.email,
-      password: hashedPW
-    });
-    res.redirect('/login'); //is all is well, redirect to login page
-  } catch {
-    res.redirect('/register'); //if something goes wrong redirect to register page
-  }
-  console.log(users);
-});
+// app.post('/register', checkNotAuthenticated, async (req, res) => {
+//   try {
+//     const hashedPW = await bcrypt.hashSync(req.body.password, 10)
+//     users.push({
+//       id: Date.now().toString(),
+//       name: req.body.name,
+//       email: req.body.email,
+//       password: hashedPW
+//     });
+//     res.redirect('/login'); //is all is well, redirect to login page
+//   } catch {
+//     res.redirect('/register'); //if something goes wrong redirect to register page
+//   }
+//   console.log(users);
+// });
 
-app.delete('/logout', (req, res) => {
-  req.logOut()
-  res.redirect('/login')
-})
+// app.delete('/logout', (req, res) => {
+//   req.logOut()
+//   res.redirect('/login')
+// })
 
-function checkAuthenticated(req, res, next) {
-  if (req.isAuthenticated()) {
-    return next()
-  }
-  res.redirect('/login')
-}
-function checkNotAuthenticated(req, res, next) {
-  if (req.isAuthenticated()) {
-    return res.redirect('/')
-  }
-  next()
-}
+// function checkAuthenticated(req, res, next) {
+//   if (req.isAuthenticated()) {
+//     return next()
+//   }
+//   res.redirect('/login')
+// }
+// function checkNotAuthenticated(req, res, next) {
+//   if (req.isAuthenticated()) {
+//     return res.redirect('/')
+//   }
+//   next()
+// }
 
-io.on('connection', (socket) => {
-    socket.on('chat message', (msg) => {
-      io.emit('chat message', msg);
-    });
-  });
+// io.on('connection', (socket) => {
+//     socket.on('chat message', (msg) => {
+//       io.emit('chat message', msg);
+//     });
+//   });
 
 
 server.listen(3000, () => {
