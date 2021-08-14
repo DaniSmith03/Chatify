@@ -15,6 +15,7 @@
     "express": "^4.17.1",
     "express-flash": "0.0.2",
     "express-session": "^1.17.2",
+    "install": "^0.13.0",
     "method-override": "^3.0.0",
     "mongodb": "^4.1.0",
     "mongoose": "^5.13.6",
