@@ -2,7 +2,7 @@
 if (process.env.NODE_ENV !== 'production') {
   require('dotenv').config()
 }
-
+const User = require("./models/user_model");
 //express server
 const express = require('express');
 const app = express();
@@ -33,6 +33,8 @@ initializePassport(
   id => users.find(user => user.id === id)
   )
 
+//replaces body parser
+app.use(express.json());
 
 app.set('view-engine', 'ejs');
 app.use(express.urlencoded({ extended: false })); // take the forms and access them inside the req in post methods.
@@ -54,6 +56,49 @@ app.get('/login', checkNotAuthenticated, (req, res) => {
   res.render('login.ejs')
 });
 
+
+
+//Test Code
+app.post('/login',(req, res)=>{
+  let eAddress= req.body.email;
+  console.log("variable is ", eAddress);
+  User.findOne({ email: eAddress }, function (err, user) {
+    if (!user) {
+            console.log(user);
+            return res.status(404).send({ message: "User Not found." })
+            }
+          else{
+            res.render('index.ejs');
+            console.log("User Exist", user);
+          }
+  });
+
+
+  //   .then(user => {
+  //     if (!user) {
+  //       console.log(user);
+  //       return res.status(404).send({ message: "User Not found." })
+  //       }
+  //     else{
+  //       console.log("User Exist");
+  //     }
+  
+  // });
+    });
+
+  
+  
+
+
+
+
+
+
+
+
+
+
+
 app.post('/login', checkNotAuthenticated, passport.authenticate('local', {
   successRedirect: '/',
   failureRedirect: '/login',
@@ -65,21 +110,34 @@ app.get('/register', checkNotAuthenticated, (req, res) => {
   res.render('register.ejs');
 });
 
+
+
 app.post('/register', checkNotAuthenticated, async (req, res) => {
   try {
     const hashedPW = await bcrypt.hashSync(req.body.password, 10)
-    users.push({
-      id: Date.now().toString(),
+    var userData = {
       name: req.body.name,
       email: req.body.email,
       password: hashedPW
-    });
+  }
+  console.log("user data is", userData );
+  new User(userData).save();
+
     res.redirect('/login'); //is all is well, redirect to login page
   } catch {
     res.redirect('/register'); //if something goes wrong redirect to register page
   }
   
 });
+
+
+
+
+
+
+
+
+
 
 app.delete('/logout', (req, res) => {
   req.logOut()
