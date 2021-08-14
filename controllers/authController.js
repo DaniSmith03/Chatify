@@ -4,15 +4,15 @@ const bcrypt = require('bcrypt');
 const passport = require('passport');
 
 const register = (req, res, next) => {
-    // bcrypt.hashSync(req.body.password, 10, function(err, hashPass) {
-    //     if(err) {
-    //         res.json({err:err})
-    //     } 
-    // })
+    bcrypt.hashSync(req.body.password, 10, function(err, hashPass) {
+        if(err) {
+            res.json({err:err})
+        } 
+    })
     let user = new User({
         name: req.body.name,
         email: req.body.email,
-        // password: hashPass
+        password: hashPass
     })
     user.save()
     .then(user => {

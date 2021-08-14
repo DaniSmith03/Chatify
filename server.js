@@ -65,6 +65,7 @@ app.use(methodOverride('_method'))
 //   res.render('register.ejs');
 // });
 
+// const user = require('./models/user.model')
 // app.post('/register', checkNotAuthenticated, async (req, res) => {
 //   try {
 //     const hashedPW = await bcrypt.hashSync(req.body.password, 10)
@@ -78,7 +79,6 @@ app.use(methodOverride('_method'))
 //   } catch {
 //     res.redirect('/register'); //if something goes wrong redirect to register page
 //   }
-//   console.log(users);
 // });
 
 // app.delete('/logout', (req, res) => {

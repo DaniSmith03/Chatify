@@ -6,8 +6,5 @@ router.post('/register', function(req, res) {
     authController.register
 })
 
-router.get('/test', function(req, res) {
-    console.log('it works');
-})
    
 module.exports = router
