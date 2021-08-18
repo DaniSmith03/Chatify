@@ -2,7 +2,7 @@
 if (process.env.NODE_ENV !== 'production') {
   require('dotenv').config()
 }
-
+const User = require("./models/user.model");
 //express server
 const express = require('express');
 const app = express();
@@ -29,11 +29,13 @@ const session = require('express-session'); //stores variables to be used persis
 const methodOverride = require('method-override');
 initializePassport(
   passport,
-  email => users.find(user => user.email === email),
-  id => users.find(user => user.id === id)
+  email => db.users.find(user => user.email === email),
+  id => db.users.find(user => user.id === id)
   )
 
 
+//replaces body parser
+app.use(express.json());
 app.set('view-engine', 'ejs');
 app.use(express.urlencoded({ extended: false })); // take the forms and access them inside the req in post methods.
 app.use(flash())
@@ -46,64 +48,93 @@ app.use(passport.initialize())
 app.use(passport.session()) 
 app.use(methodOverride('_method'))
 
-// app.get('/', checkAuthenticated, (req, res) => {
-//   res.render('index.ejs');
-// });
+app.get('/', checkAuthenticated, (req, res) => {
+  res.render('index.ejs');
+});
 
-// app.get('/login', checkNotAuthenticated, (req, res) => {
-//   res.render('login.ejs')
-// });
+app.get('/register', checkNotAuthenticated, (req, res) => {
+  res.render('register.ejs');
+});
 
-// app.post('/login', checkNotAuthenticated, passport.authenticate('local', {
-//   successRedirect: '/',
-//   failureRedirect: '/login',
-//   failureFlash: true
-// }))
+app.post('/register', checkNotAuthenticated, async (req, res) => {
+  try {
+    const hashedPW = await bcrypt.hashSync(req.body.password, 10)
+    var userData = {
+      name: req.body.name,
+      email: req.body.email,
+      password: hashedPW
+  }
+  console.log("user data is", userData );
+  new User(userData).save();
+    res.redirect('/login'); //is all is well, redirect to login page
+  } catch {
+    res.redirect('/register'); //if something goes wrong redirect to register page
+  }
+});
 
+app.get('/login', checkNotAuthenticated, (req, res) => {
+  res.render('login.ejs')
+});
 
-// app.get('/register', checkNotAuthenticated, (req, res) => {
-//   res.render('register.ejs');
-// });
-
-// const user = require('./models/user.model')
-// app.post('/register', checkNotAuthenticated, async (req, res) => {
-//   try {
-//     const hashedPW = await bcrypt.hashSync(req.body.password, 10)
-//     users.push({
-//       id: Date.now().toString(),
-//       name: req.body.name,
-//       email: req.body.email,
-//       password: hashedPW
-//     });
-//     res.redirect('/login'); //is all is well, redirect to login page
-//   } catch {
-//     res.redirect('/register'); //if something goes wrong redirect to register page
-//   }
-// });
-
-// app.delete('/logout', (req, res) => {
-//   req.logOut()
-//   res.redirect('/login')
-// })
-
-// function checkAuthenticated(req, res, next) {
-//   if (req.isAuthenticated()) {
-//     return next()
-//   }
-//   res.redirect('/login')
-// }
-// function checkNotAuthenticated(req, res, next) {
-//   if (req.isAuthenticated()) {
-//     return res.redirect('/')
-//   }
-//   next()
-// }
-
-// io.on('connection', (socket) => {
-//     socket.on('chat message', (msg) => {
-//       io.emit('chat message', msg);
-//     });
+//Test Code
+// app.post('/login',(req, res)=>{
+//   let eAddress= req.body.email;
+//   console.log("variable is ", eAddress);
+//   User.findOne({ email: eAddress }, function (err, user) {
+//     if (!user) {
+//             console.log(user);
+//             return res.status(404).send({ message: "User Not found." })
+//             }
+//           else{
+//             res.render('index.ejs');
+//             console.log("User Exist", user);
+//           }
 //   });
+//   //   .then(user => {
+//   //     if (!user) {
+//   //       console.log(user);
+//   //       return res.status(404).send({ message: "User Not found." })
+//   //       }
+//   //     else{
+//   //       console.log("User Exist");
+//   //     }
+  
+//   // });
+//     });
+
+
+
+app.post('/login', checkNotAuthenticated, passport.authenticate('local', {
+  successRedirect: '/',
+  failureRedirect: '/login',
+  failureFlash: true
+}))
+
+
+
+app.delete('/logout', (req, res) => {
+  req.logOut()
+  res.redirect('/login')
+})
+
+function checkAuthenticated(req, res, next) {
+  if (req.isAuthenticated()) {
+    return next()
+  }
+  res.redirect('/login')
+}
+function checkNotAuthenticated(req, res, next) {
+  if (req.isAuthenticated()) {
+    return res.redirect('/')
+  }
+  next()
+}
+
+io.on('connection', (socket) => {
+    socket.on('chat message', (msg) => {
+      io.emit('chat message', msg);
+    });
+  });
 
 
 server.listen(3000, () => {
