@@ -32,7 +32,7 @@ DigitalCrafts Backend Project
 <!-- ABOUT THE PROJECT -->
 ## About The Project
 
-[![Product Name Screen Shot][product-screenshot]](https://chatifydc.herokuapp.com/login)
+[![Chatify logo](images/chatify.png)](https://chatifydc.herokuapp.com/login)
 
 While this project started as just a program requirement, we wanted to build something with substance. Why? Because we are developers of course! The application outlined in this documentation is a chat application designed to take you back to early 2000's AIM/ Yahoo messenger. While we hope the application is reminiscent of simpler times, We Would like to deliver something more than a simple application.
 
@@ -164,9 +164,9 @@ This project is currently closed for contributions but feel free to clone this r
 <!-- CONTACT -->
 ## Contact
 
-Dani Smith  - (https://github.com/danismith03) - DaniSmith.codes
-Laura Medina - https://github.com/lcmedina - LauraChristine.net
-Project Link: [https://github.com/lcmedina/Chatify.git](https://github.com/lcmedina/Chatify.git)
+Dani Smith  - (https://github.com/danismith03) - DaniSmith.codes  
+Laura Medina - (https://github.com/lcmedina) - LauraChristine.net  
+Project Link: [https://github.com/lcmedina/Chatify.git](https://github.com/lcmedina/Chatify.git) | [https://chatifydc.herokuapp.com/login](https://chatifydc.herokuapp.com/login)
 
 
 
