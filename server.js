@@ -2,7 +2,6 @@
 if (process.env.NODE_ENV !== 'production') {
   require('dotenv').config()
 }
-const User = require("./models/user.model");
 //express server
 const express = require('express');
 const app = express();
@@ -16,8 +15,7 @@ const io = new Server(server);
 //database setup
 const mongoose = require('mongoose');
 const db = require("./config/db.config.js");
-
-
+const User = require("./models/user.model");
 
 //authentication
 const bcrypt = require('bcrypt'); // hash user passwords
