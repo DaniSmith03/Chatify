@@ -114,7 +114,7 @@ This is an example of how to list things you need to use the software and how to
    npm install
    ```
 3. Create .env file 
-  ```txt
+  ```sh
   SESSION_SECRET= YourSecretKEY
   .env file
 
