@@ -114,18 +114,20 @@ This is an example of how to list things you need to use the software and how to
    npm install
    ```
 3. Create .env file 
-  ```sh
+  ```txt
   SESSION_SECRET= YourSecretKEY
   .env file
+  ```
 
 4. Connect your database
   ```js
   db.config.js file
+  ```
 
 5. Connect your server
   ```js
   server.js file
-
+  ```
 
 <!-- USAGE EXAMPLES -->
 ## Usage
