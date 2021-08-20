@@ -16,8 +16,7 @@ const io = new Server(server);
 //database setup
 const mongoose = require('mongoose');
 const db = require("./config/db.config.js");
-const authRoute = require('./routes/auth.route');
-app.use('/api', authRoute)
+
 
 
 //authentication
@@ -29,13 +28,13 @@ const session = require('express-session'); //stores variables to be used persis
 const methodOverride = require('method-override');
 initializePassport(
   passport,
-  email => db.users.find(user => user.email === email),
-  id => db.users.find(user => user.id === id)
+  email => User.findOne({email: email}),
+  id => User.findOne({id: id})
   )
-
 
 //replaces body parser
 app.use(express.json());
+
 app.set('view-engine', 'ejs');
 app.use(express.urlencoded({ extended: false })); // take the forms and access them inside the req in post methods.
 app.use(flash())
@@ -52,9 +51,22 @@ app.get('/', checkAuthenticated, (req, res) => {
   res.render('index.ejs');
 });
 
+app.get('/login', checkNotAuthenticated, (req, res) => {
+  res.render('login.ejs')
+});
+
+app.post('/login', checkNotAuthenticated, passport.authenticate('local', {
+  successRedirect: '/',
+  failureRedirect: '/login',
+  failureFlash: true
+}))
+
+
 app.get('/register', checkNotAuthenticated, (req, res) => {
   res.render('register.ejs');
 });
+
+
 
 app.post('/register', checkNotAuthenticated, async (req, res) => {
   try {
@@ -66,51 +78,13 @@ app.post('/register', checkNotAuthenticated, async (req, res) => {
   }
   console.log("user data is", userData );
   new User(userData).save();
+
     res.redirect('/login'); //is all is well, redirect to login page
   } catch {
     res.redirect('/register'); //if something goes wrong redirect to register page
   }
-});
-
-app.get('/login', checkNotAuthenticated, (req, res) => {
-  res.render('login.ejs')
-});
-
-//Test Code
-// app.post('/login',(req, res)=>{
-//   let eAddress= req.body.email;
-//   console.log("variable is ", eAddress);
-//   User.findOne({ email: eAddress }, function (err, user) {
-//     if (!user) {
-//             console.log(user);
-//             return res.status(404).send({ message: "User Not found." })
-//             }
-//           else{
-//             res.render('index.ejs');
-//             console.log("User Exist", user);
-//           }
-//   });
-//   //   .then(user => {
-//   //     if (!user) {
-//   //       console.log(user);
-//   //       return res.status(404).send({ message: "User Not found." })
-//   //       }
-//   //     else{
-//   //       console.log("User Exist");
-//   //     }
   
-//   // });
-//     });
-
-
-
-app.post('/login', checkNotAuthenticated, passport.authenticate('local', {
-  successRedirect: '/',
-  failureRedirect: '/login',
-  failureFlash: true
-}))
-
-
+});
 
 app.delete('/logout', (req, res) => {
   req.logOut()
