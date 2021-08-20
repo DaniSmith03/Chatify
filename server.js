@@ -2,7 +2,7 @@
 if (process.env.NODE_ENV !== 'production') {
   require('dotenv').config()
 }
-
+const User = require("./models/user.model");
 //express server
 const express = require('express');
 const app = express();
@@ -16,8 +16,7 @@ const io = new Server(server);
 //database setup
 const mongoose = require('mongoose');
 const db = require("./config/db.config.js");
-const authRoute = require('./routes/auth.route');
-app.use('/api', authRoute)
+
 
 
 //authentication
@@ -29,10 +28,12 @@ const session = require('express-session'); //stores variables to be used persis
 const methodOverride = require('method-override');
 initializePassport(
   passport,
-  email => users.find(user => user.email === email),
-  id => users.find(user => user.id === id)
+  email => User.findOne({email: email}),
+  id => User.findOne({id: id})
   )
 
+//replaces body parser
+app.use(express.json());
 
 app.set('view-engine', 'ejs');
 app.use(express.urlencoded({ extended: false })); // take the forms and access them inside the req in post methods.
@@ -65,6 +66,7 @@ app.get('/register', checkNotAuthenticated, (req, res) => {
   res.render('register.ejs');
 });
 
+<<<<<<< HEAD
 app.post('/register', checkNotAuthenticated, async (req, res) => {
   try {
     const hashedPW = await bcrypt.hashSync(req.body.password, 10)
@@ -74,11 +76,30 @@ app.post('/register', checkNotAuthenticated, async (req, res) => {
       email: req.body.email,
       password: hashedPW
     });
+=======
+
+
+app.post('/register', checkNotAuthenticated, async (req, res) => {
+  try {
+    const hashedPW = await bcrypt.hashSync(req.body.password, 10)
+    var userData = {
+      name: req.body.name,
+      email: req.body.email,
+      password: hashedPW
+  }
+  console.log("user data is", userData );
+  new User(userData).save();
+
+>>>>>>> 9df948a3cc07c590435968d1b62b0476c6cdd62e
     res.redirect('/login'); //is all is well, redirect to login page
   } catch {
     res.redirect('/register'); //if something goes wrong redirect to register page
   }
+<<<<<<< HEAD
   console.log(users);
+=======
+  
+>>>>>>> 9df948a3cc07c590435968d1b62b0476c6cdd62e
 });
 
 app.delete('/logout', (req, res) => {
@@ -105,6 +126,7 @@ io.on('connection', (socket) => {
     });
   });
 
+<<<<<<< HEAD
 let port = process.env.PORT;
 if (port == null || port == "") {
   port = 3000;
@@ -112,4 +134,9 @@ if (port == null || port == "") {
 
 server.listen(port, () => {
   console.log('Server has started successfully');
+=======
+
+server.listen(3000, () => {
+  console.log('listening on *:3000');
+>>>>>>> 9df948a3cc07c590435968d1b62b0476c6cdd62e
 });
