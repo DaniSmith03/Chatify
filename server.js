@@ -66,19 +66,6 @@ app.get('/register', checkNotAuthenticated, (req, res) => {
   res.render('register.ejs');
 });
 
-<<<<<<< HEAD
-app.post('/register', checkNotAuthenticated, async (req, res) => {
-  try {
-    const hashedPW = await bcrypt.hashSync(req.body.password, 10)
-    users.push({
-      id: Date.now().toString(),
-      name: req.body.name,
-      email: req.body.email,
-      password: hashedPW
-    });
-=======
-
-
 app.post('/register', checkNotAuthenticated, async (req, res) => {
   try {
     const hashedPW = await bcrypt.hashSync(req.body.password, 10)
@@ -90,16 +77,11 @@ app.post('/register', checkNotAuthenticated, async (req, res) => {
   console.log("user data is", userData );
   new User(userData).save();
 
->>>>>>> 9df948a3cc07c590435968d1b62b0476c6cdd62e
     res.redirect('/login'); //is all is well, redirect to login page
   } catch {
     res.redirect('/register'); //if something goes wrong redirect to register page
   }
-<<<<<<< HEAD
-  console.log(users);
-=======
   
->>>>>>> 9df948a3cc07c590435968d1b62b0476c6cdd62e
 });
 
 app.delete('/logout', (req, res) => {
@@ -126,7 +108,6 @@ io.on('connection', (socket) => {
     });
   });
 
-<<<<<<< HEAD
 let port = process.env.PORT;
 if (port == null || port == "") {
   port = 3000;
@@ -134,9 +115,4 @@ if (port == null || port == "") {
 
 server.listen(port, () => {
   console.log('Server has started successfully');
-=======
-
-server.listen(3000, () => {
-  console.log('listening on *:3000');
->>>>>>> 9df948a3cc07c590435968d1b62b0476c6cdd62e
 });
